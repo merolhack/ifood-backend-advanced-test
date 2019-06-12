@@ -20,3 +20,23 @@ As this service will be a worldwide success, it must be prepared to be fault tol
 Use whatever language, tools and frameworks you feel comfortable to, and briefly elaborate on your solution, architecture details, choice of patterns and frameworks.
 
 Also, make it easy to deploy/run your service(s) locally (consider using some container/vm solution for this). Once done, share your code with us.
+
+## Heroku steps
+
+1.- Login into the Heroku account an create an app:
+```bash
+heroku login
+heroku create
+```
+
+2.- Create and commit the *Procfile*:
+```bash
+echo "java.runtime.version=1.8" > system.properties
+git add system.properties && git commit -m ":wrench: chore: Java 8"
+```
+
+3.- Set the JVM build pack and deploy the war:
+```bash
+heroku buildpacks:set heroku/jvm
+mvn clean heroku:deploy-war
+```
