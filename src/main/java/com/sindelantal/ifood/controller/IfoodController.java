@@ -3,9 +3,12 @@
  */
 package com.sindelantal.ifood.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 
 import com.sindelantal.ifood.exception.CityNotFoundException;
+import com.sindelantal.ifood.exception.NothingSelectedException;
+import com.sindelantal.ifood.model.Track;
 import com.sindelantal.ifood.service.IfoodService;
 
 /**
@@ -34,22 +39,14 @@ public class IfoodController {
 
 	@RequestMapping(value = "/tracks", method = RequestMethod.GET, produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<String> healthCheck(
+	public HttpEntity<Track> healthCheck(
 			@RequestParam(value = "city", defaultValue = "", required=false) String city, 
 			@RequestParam(value = "lat", defaultValue = "", required=false) String lat,
-			@RequestParam(value = "lon", defaultValue = "", required=false) String lon) {
+			@RequestParam(value = "lon", defaultValue = "", required=false) String lon) throws RestClientException, CityNotFoundException, NothingSelectedException {
 		
-		try {
-			ifoodService.getTracks(city.trim(), lat.trim(), lon.trim());
-		} catch (RestClientException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		HttpEntity<Track> response = ifoodService.getTracks(city.trim(), lat.trim(), lon.trim());
 		
-        return new ResponseEntity<>("{\"status\" : true}", HttpStatus.OK);
+        return response;
     }
 
 }

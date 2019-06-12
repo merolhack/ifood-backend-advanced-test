@@ -1,15 +1,13 @@
 package com.sindelantal.ifood.model;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Track {
-	
-	public List<Tracks> tracks;
-	public List<Seed> seeds;
+public class Images {
+	public String height;
+	public String idurl;
+	public String width;
 }

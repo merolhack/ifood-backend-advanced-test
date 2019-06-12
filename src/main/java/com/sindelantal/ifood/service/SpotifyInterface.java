@@ -9,6 +9,13 @@ public interface SpotifyInterface {
 	 *
 	 * @return HttpHeaders headers
 	 */
-	public HttpHeaders getHeaders();
+	public HttpHeaders getHeaders(String token);
+	
+	/**
+	 * Get the headers for the request
+	 *
+	 * @return HttpHeaders headers
+	 */
+	public HttpHeaders getAuthHeaders(String username, String password);
 
 }

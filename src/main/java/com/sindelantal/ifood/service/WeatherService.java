@@ -85,9 +85,8 @@ public class WeatherService implements WeatherInterface {
 		        .queryParam("units", "metric");
 		ResponseEntity<Weather> response = restTemplate
 				  .exchange(builder.toUriString(), HttpMethod.GET, entity, Weather.class);
-		LOG.info(response.toString());
-		return null;
-		
+		LOG.info("response {}", response.toString());
+		return response;
 	}
 	
 	/**
