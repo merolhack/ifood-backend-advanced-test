@@ -18,6 +18,6 @@ public interface IfoodInterface {
 	 * @throws RestClientException 
 	 * @throws NothingSelectedException 
 	 */
-	public HttpEntity<Track> getTracks(String city, String lat, String lon) throws RestClientException, CityNotFoundException, NothingSelectedException;
+	public Track getTracks(String city, String lat, String lon) throws RestClientException, CityNotFoundException, NothingSelectedException;
 
 }

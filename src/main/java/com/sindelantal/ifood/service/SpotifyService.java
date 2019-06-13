@@ -41,7 +41,7 @@ public class SpotifyService implements SpotifyInterface {
 	@Value("${spotify.api.recommendations}")
 	private String apiRecommendations;
 
-	public HttpEntity<Track> getSongs(String genre) {
+	public Track getSongs(String genre) {
 		// Sets a new instance
 		RestTemplate restTemplate = new RestTemplate();
 		// Gets the access token
@@ -49,35 +49,33 @@ public class SpotifyService implements SpotifyInterface {
 		HttpHeaders headers = this.getHeaders(accessToken);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		
-		HttpEntity<Track> trackList = null;
+		ResponseEntity<Track> trackList = null;
 		LOG.info("headers: {}", headers.toString());
 		
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiRecommendations)
 		        .queryParam("seed_genres", genre);
 		LOG.info("Builder {}", builder.toUriString());
-		
 		LOG.info("seed_genres: {}", genre);
-
 		LOG.info("apiRecommendations: {}", apiRecommendations);
 
 		try {
 			trackList = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, Track.class);
-		} catch (HttpClientErrorException ex) {
-			LOG.info("Message... {}", ex.getMessage());
-			LOG.info("Body... {}", ex.getResponseBodyAsString());
-			LOG.info("Headers... {}", ex.getResponseHeaders());
+		} catch (HttpClientErrorException e) {
+			LOG.info("Message... {}", e.getMessage());
+			LOG.info("Body... {}", e.getResponseBodyAsString());
+			LOG.info("Headers... {}", e.getResponseHeaders());
 		}
 
 		LOG.info("trackList: {}", trackList);
 
-		return trackList;
+		return trackList.getBody();
 	}
 
 	/**
 	 * Get the access token
 	 */
 	public String getAccessToken() {
-		ResponseEntity<?> response = null;
+		String accessToken = null;
 		HttpHeaders authHeaders = this.getAuthHeaders(tokenUser, tokenPass);
 		LOG.info("authHeaders: {}", authHeaders);
 
@@ -87,10 +85,18 @@ public class SpotifyService implements SpotifyInterface {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, authHeaders);
 		LOG.info("entity: {}", request.toString());
 
-		HttpEntity<AccessToken> accessToken = restTemplate.exchange(tokenUrl, HttpMethod.POST, request,
-				AccessToken.class);
-		LOG.info("accessToken: {}", accessToken.getBody().accessToken);
-		return accessToken.getBody().accessToken;
+		try {
+			HttpEntity<AccessToken> response = restTemplate.exchange(tokenUrl, HttpMethod.POST, request,
+					AccessToken.class);
+			LOG.info("accessToken: {}", response.getBody().accessToken);
+			accessToken = response.getBody().accessToken;
+		} catch (HttpClientErrorException e) {
+			LOG.info("Message... {}", e.getMessage());
+			LOG.info("Body... {}", e.getResponseBodyAsString());
+			LOG.info("Headers... {}", e.getResponseHeaders());
+		}
+		
+		return accessToken;
 	}
 
 	/**
